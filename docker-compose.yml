@@ -1,0 +1,24 @@
+services:
+  # 1. บริการหน้าเว็บส่วนตัว (My Personal Website)
+  pulse-my-website:
+    image: nginx:alpine
+    container_name: pulse-my-website
+    restart: always # ตั้งค่าให้รีสตาร์ทอัตโนมัติหากระบบล่ม
+    ports:
+      - "8080:80" # เครื่องเราเข้าผ่าน Port 8080
+    volumes:
+      - ./website:/usr/share/nginx/html # ดึงไฟล์ HTML จากโฟลเดอร์ website
+
+  # 2. บริการ Uptime Kuma (Monitoring Tool)
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: pulse-uptime-kuma
+    restart: always # ตั้งค่าให้รีสตาร์ทอัตโนมัติหากระบบล่ม
+    ports:
+      - "3001:3001" # เครื่องเราเข้าผ่าน Port 3001
+    volumes:
+      - uptime-kuma-data:/app/data # บันทึกข้อมูลมอนิเตอร์ไว้ใน Volume
+      - //var/run/docker.sock:/var/run/docker.sock # เชื่อมต่อ Docker Engine เพื่อเช็ก Container โดยตรง
+
+volumes:
+  uptime-kuma-data:
